@@ -1,10 +1,7 @@
-package
-{
-	import flash.display.BlendMode;
+package {
 	import org.flixel.*;
 
-	public class PlayState extends FlxState
-	{
+	public class PlayState extends FlxState {
 		// Tileset that works with AUTO mode (best for thin walls)
 		[Embed(source = 'auto_tiles.png')]private static var auto_tiles:Class;
 		
@@ -39,9 +36,13 @@ package
 		private var resetBtn:FlxButton;
 		private var quitBtn:FlxButton;
 		private var helperTxt:FlxText;
+		private var miniMap:FlxMinimap;
+		private var StartTicks:int;
 		
 		override public function create():void
 		{
+			StartTicks = FlxU.getTicks();
+			
 			FlxG.framerate = 50;
 			FlxG.flashFramerate = 50;
 			
@@ -68,10 +69,10 @@ package
 			// Initializes the map using the generated string, the tile images, and the tile size
 			collisionMap.loadMap(new default_auto(), auto_tiles, TILE_WIDTH, TILE_HEIGHT, FlxTilemap.AUTO);
 			add(collisionMap);
-			
+					
 			highlightBox = new FlxObject(0, 0, TILE_WIDTH, TILE_HEIGHT);
 			
-			setupPlayer();
+			setupPlayer();			
 			
 			// When switching between modes here, the map is reloaded with it's own data, so the positions of tiles are kept the same
 			// Notice that different tilesets are used when the auto mode is switched
@@ -123,6 +124,9 @@ package
 						player.y = 64;
 						break;
 				}
+				
+				// refresh the minimap
+				miniMap.refresh();
 			});
 			add(resetBtn);
 			
@@ -149,6 +153,7 @@ package
 				// Setting a tile to 0 removes it, and setting it to anything else will place a tile.
 				// If auto map is on, the map will automatically update all surrounding tiles.
 				collisionMap.setTile(FlxG.mouse.x / TILE_WIDTH, FlxG.mouse.y / TILE_HEIGHT, FlxG.keys.SHIFT?0:1);
+				miniMap.refresh();
 			}
 			
 			updatePlayer();
@@ -184,6 +189,11 @@ package
 			player.addAnimation("jump", [4]);
 			
 			add(player);
+			
+			// make minimap
+			miniMap = new FlxMinimap(collisionMap, FlxG.width - 75 + 3, 3, 75, 50);
+			miniMap.follow(player, 0xffff0000); // follow the player in red
+			add(miniMap);			
 		}
 		
 		private function updatePlayer():void
