@@ -138,26 +138,8 @@ package {
 					}
 				}
 			}
-			// blur it a bit
-			bmd = blur(bmd, 128);
 		}
 		
-		/**
-		 * Utility function to blur a bitmap a certain amount
-		 * 
-		 * @param	Bitmapdata unblured image
-		 * @param	Blurvalue amount of blurring to apply
-		 * @return the blurred bitmap
-		 */
-		private function blur(Bitmapdata:BitmapData, Blurvalue:Number = 4):BitmapData {
-			var result:BitmapData = Bitmapdata.clone();
-			var blur:BlurFilter = new BlurFilter();
-			blur.blurX = Blurvalue; 
-			blur.blurY = Blurvalue; 
-			blur.quality = BitmapFilterQuality.LOW;
-			Bitmapdata.applyFilter(result, new Rectangle(0, 0, Bitmapdata.width, Bitmapdata.height), new Point(0,0), blur);
-			return result;			
-		}			
 		
 		/**
 		 * Getter for the color used to indicate a solid tile
@@ -185,6 +167,6 @@ package {
 		 */
 		public function set emptyColor(value:uint):void {
 			_emptyColor = value;
-		}
+		}	
 	}
 }
